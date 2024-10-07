@@ -35,4 +35,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run:
-        gh release upload ${{ github.event.release.tag_name }} ./dist/pre_commit_strip_office_metadata-*.whl
+        gh release upload ${{ github.event.release.tag_name }} ./dist/pre_commit_check_office_metadata-*.whl
