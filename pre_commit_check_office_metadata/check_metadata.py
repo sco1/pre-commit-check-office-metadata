@@ -1,5 +1,6 @@
 import argparse
 import sys
+import typing as t
 import xml.etree.ElementTree as ET
 import zipfile
 from collections import abc
@@ -15,7 +16,7 @@ class MetadataFoundError(Exception):  # noqa: D101
 
     def report(self) -> None:  # noqa: D102
         for xml_path, found_tags in self.details.items():
-            print(f"    {xml_path}: {", ".join(found_tags)}")
+            print(f"    {xml_path}: {', '.join(found_tags)}")
 
 
 def _check_attributes(root: ET.Element, flag_tags: set[str]) -> set[str]:
@@ -47,7 +48,7 @@ def check_document(doc: Path, filters: dict[str, set[str]]) -> None:
         raise MetadataFoundError("Metadata found", found)
 
 
-def main(argv: abc.Sequence[str] | None = None) -> int:  # noqa: D103
+def main(argv: t.Optional[abc.Sequence[str]] = None) -> int:  # noqa: D103
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*", type=Path)
     parser.add_argument("--extensions", nargs="*", type=str, default=OFFICE_EXTENSIONS)
