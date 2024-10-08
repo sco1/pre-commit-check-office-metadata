@@ -1,6 +1,6 @@
 [project]
 name = "pre-commit-check-office-metadata"
-version = "0.1.0"
+version = "1.0.0"
 description = "Check for identifying metadata in modern Office files"
 authors = [
     {name = "sco1", email = "sco1.git@gmail.com"}
@@ -41,7 +41,7 @@ checkmetadata = "pre_commit_check_office_metadata.check_metadata:main"
 [tool.uv]
 dev-dependencies = [
     "black~=24.8",
-    "bump2version~=1.0",
+    "bump-my-version~=0.27",
     "flake8~=7.1",
     "flake8-annotations~=3.1",
     "isort~=5.13",

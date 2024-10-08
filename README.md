@@ -1,5 +1,5 @@
 # pre-commit-check-office-metadata
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pre-commit-check-office-metadata/0.7.0?logo=python&logoColor=FFD43B)](https://pypi.org/project/pre-commit-check-office-metadata/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pre-commit-check-office-metadata/1.0.0?logo=python&logoColor=FFD43B)](https://pypi.org/project/pre-commit-check-office-metadata/)
 [![PyPI](https://img.shields.io/pypi/v/pre-commit-check-office-metadata?logo=Python&logoColor=FFD43B)](https://pypi.org/project/pre-commit-check-office-metadata/)
 [![PyPI - License](https://img.shields.io/pypi/l/pre-commit-check-office-metadata?color=magenta)](https://github.com/sco1/pre-commit-check-office-metadata/blob/main/LICENSE)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/sco1/pre-commit-check-office-metadata/main.svg)](https://results.pre-commit.ci/latest/github/sco1/pre-commit-check-office-metadata/main)
@@ -13,7 +13,7 @@ Add this to your `.pre-commit-config.yaml`
 
 ```yaml
 -   repo: https://github.com/sco1/pre-commit-check-office-metadata
-    rev: v0.1.0
+    rev: v1.0.0
     hooks:
     - id: check-metadata
 ```

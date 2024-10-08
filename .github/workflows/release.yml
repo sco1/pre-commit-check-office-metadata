@@ -1,4 +1,4 @@
-name: Publish to PyPI
+name: Build Release
 
 on:
   release:
@@ -24,12 +24,6 @@ jobs:
 
     - name: Build package
       run: uvx --from build pyproject-build --installer uv
-
-    - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1.9
-      with:
-        user: __token__
-        password: ${{ secrets.pypi_api_token }}
 
     - name: Upload wheel to release
       env:
