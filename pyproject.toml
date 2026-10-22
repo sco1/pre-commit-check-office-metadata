@@ -49,7 +49,7 @@ dev = [
     "pytest-cov~=7.0",
     "pytest-randomly~=5.0",
     "ruff~=0.6",
-    "rumdl~=0.2.31",
+    "rumdl~=0.3.0",
     "sco1-bumper~=2.0",
     "tox~=4.18",
     "tox-uv~=1.11",
@@ -89,5 +89,5 @@ module-name = "pre_commit_check_office_metadata"
 module-root = ""
 
 [build-system]
-requires = ["uv_build>=0.13.0,<0.14"]
+requires = ["uv_build>=0.13.4,<0.14"]
 build-backend = "uv_build"
