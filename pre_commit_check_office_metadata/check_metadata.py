@@ -1,4 +1,5 @@
 import argparse
+import re
 import sys
 import typing as t
 import xml.etree.ElementTree as ET
@@ -7,6 +8,37 @@ from collections import abc
 from pathlib import Path
 
 from pre_commit_check_office_metadata import FLAG_TAGS, OFFICE_EXTENSIONS, _element_name_from_tag
+
+EXTENSION_PATTERN = re.compile(r"^\.[A-Za-z0-9]+$")
+TAG_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_-]*$")
+
+
+def _split_csv(value: str) -> set[str]:
+    return {v.strip() for v in value.split(",") if v.strip()}
+
+
+def _extension_set(value: str) -> set[str]:
+    """Parse a comma-separated list of file extensions, e.g. `".docx,.xlsx"`."""
+    extensions = {ex.lower() for ex in _split_csv(value)}
+    invalid = sorted(ex for ex in extensions if not EXTENSION_PATTERN.match(ex))
+    if invalid:
+        raise argparse.ArgumentTypeError(
+            f"invalid extension(s): {', '.join(invalid)} (expected e.g. '.docx,.xlsx')"
+        )
+
+    return extensions
+
+
+def _tag_set(value: str) -> set[str]:
+    """Parse a comma-separated list of XML tag names, e.g. `"creator,lastModifiedBy"`."""
+    tags = _split_csv(value)
+    invalid = sorted(tag for tag in tags if not TAG_PATTERN.match(tag))
+    if invalid:
+        raise argparse.ArgumentTypeError(
+            f"invalid tag name(s): {', '.join(invalid)} (expected e.g. 'Application,Company')"
+        )
+
+    return tags
 
 
 class MetadataFoundError(Exception):  # noqa: D101
@@ -51,18 +83,23 @@ def check_document(doc: Path, filters: dict[str, set[str]]) -> None:
 def main(argv: t.Optional[abc.Sequence[str]] = None) -> int:  # noqa: D103
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*", type=Path)
-    parser.add_argument("--extensions", nargs="*", type=str, default=OFFICE_EXTENSIONS)
-    parser.add_argument("--app-exclude", nargs="*", type=str, default=FLAG_TAGS["docProps/app.xml"])
+    parser.add_argument("--extensions", type=_extension_set, default=set(OFFICE_EXTENSIONS))
+    parser.add_argument("--app-exclude", type=_tag_set, default=set(FLAG_TAGS["docProps/app.xml"]))
     parser.add_argument(
-        "--core-exclude", nargs="*", type=str, default=FLAG_TAGS["docProps/core.xml"]
+        "--core-exclude", type=_tag_set, default=set(FLAG_TAGS["docProps/core.xml"])
     )
     args = parser.parse_args(argv)
 
-    args.extensions = {ex.lower() for ex in args.extensions}
+    missing = [str(file) for file in args.filenames if not file.is_file()]
+    if missing:
+        parser.error(
+            f"file(s) not found: {', '.join(missing)}. "
+            "Option values must be comma-separated, e.g. --app-exclude=Application,Company"
+        )
 
     filters = {
-        "docProps/app.xml": set(args.app_exclude),
-        "docProps/core.xml": set(args.core_exclude),
+        "docProps/app.xml": args.app_exclude,
+        "docProps/core.xml": args.core_exclude,
     }
 
     ec = 0

@@ -26,10 +26,24 @@ Add this to your `.pre-commit-config.yaml`
 
 Check Office document metadata for the presence of information under the specified XML tags. No attempt is made to modify the file.
 
-* Use `--extensions` to specify file extensions to consider (Default: `[".xlsx", ".docx", ".pptx"]`)
+* Use `--extensions` to specify file extensions to consider (Default: `.xlsx,.docx,.pptx`)
   * **NOTE:** Both the extensions to be considered and the extensions passed to this hook are converted to lowercase for comparison
-* Use `--app-exclude` to specify tags in the document's `docProps/app.xml` XML file to check (Default: `["Application", "Company"]`)
-* Use `--core-exclude` to specify tags in the document's `docProps/core.xml` XML file to check (Default: `["creator", "lastModifiedBy"]`)
+* Use `--app-exclude` to specify tags in the document's `docProps/app.xml` XML file to check (Default: `Application,Company`)
+* Use `--core-exclude` to specify tags in the document's `docProps/core.xml` XML file to check (Default: `creator,lastModifiedBy`)
+
+Each option takes a single comma-separated value, which replaces the default. Pass an empty value (e.g. `--app-exclude=`) to skip checking that XML file's tags. Tag names are case-sensitive.
+
+```yaml
+-   repo: https://github.com/sco1/pre-commit-check-office-metadata
+    rev: v1.0.0
+    hooks:
+    - id: check-metadata
+      args: ["--extensions=.docx,.xlsx", "--core-exclude=creator,lastModifiedBy"]
+```
+
+**NOTE:** Quote any comma-separated value inside a YAML `[...]` list; YAML otherwise splits the value at the comma.
+
+**NOTE:** Space-separated values (e.g. `[--app-exclude, Application, Company]`) are not supported; the extra values are interpreted as filenames and the hook will exit with an error.
 
 ## Python Version Support
 
