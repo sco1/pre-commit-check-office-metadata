@@ -27,7 +27,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/sco1/"
+Homepage = "https://github.com/sco1/pre-commit-check-office-metadata"
 Documentation = "https://github.com/sco1/pre-commit-check-office-metadata/blob/main/README.md"
 Repository = "https://github.com/sco1/pre-commit-check-office-metadata"
 Issues = "https://github.com/sco1/pre-commit-check-office-metadata/issues"

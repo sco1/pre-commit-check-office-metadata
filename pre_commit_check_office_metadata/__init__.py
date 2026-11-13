@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 
 FLAG_TAGS = {
     "docProps/app.xml": ["Application", "Company"],
-    "docProps/core.xml": ["Creator", "lastModifiedBy"],
+    "docProps/core.xml": ["creator", "lastModifiedBy"],
 }
 
 OFFICE_EXTENSIONS = {".xlsx", ".docx", ".pptx"}

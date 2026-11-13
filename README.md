@@ -29,7 +29,7 @@ Check Office document metadata for the presence of information under the specifi
 * Use `--extensions` to specify file extensions to consider (Default: `[".xlsx", ".docx", ".pptx"]`)
   * **NOTE:** Both the extensions to be considered and the extensions passed to this hook are converted to lowercase for comparison
 * Use `--app-exclude` to specify tags in the document's `docProps/app.xml` XML file to check (Default: `["Application", "Company"]`)
-* Use `--core-exclude` to specify tags in the document's `docProps/core.xml` XML file to check (Default: `["Creator", "lastModifiedBy"]`)
+* Use `--core-exclude` to specify tags in the document's `docProps/core.xml` XML file to check (Default: `["creator", "lastModifiedBy"]`)
 
 ## Python Version Support
 

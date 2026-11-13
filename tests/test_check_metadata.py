@@ -29,9 +29,18 @@ def test_check_attributes() -> None:
     assert _check_attributes(root, flag_tags={"Application", "Company"}) == truth_match
 
 
+def test_check_attributes_core() -> None:
+    zf = zipfile.Path(TEST_DATA_DIR / "sample_file.xlsx")
+    doc_path = zf / "docProps/core.xml"
+    root = ET.fromstring(doc_path.read_text())
+
+    truth_match = {"creator", "lastModifiedBy"}
+    assert _check_attributes(root, flag_tags={"creator", "lastModifiedBy"}) == truth_match
+
+
 TEST_FILTERS = {
     "docProps/app.xml": {"Application", "Company"},
-    "docProps/core.xml": {"Creator", "lastModifiedBy"},
+    "docProps/core.xml": {"creator", "lastModifiedBy"},
 }
 CHECK_DOC_P = partial(check_document, filters=TEST_FILTERS)
 

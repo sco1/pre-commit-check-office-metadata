@@ -14,28 +14,26 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/checkout@v7.0.1
-      with:
-        persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
 
-    - name: Install uv
-      uses: astral-sh/setup-uv@v10.3.1
-      with:
-        version: "0.13.x"
-        enable-cache: false
-        cache-dependency-glob: "uv.lock"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.3
+        with:
+          version: "0.13.x"
+          enable-cache: false
 
-    - name: Set up Python
-      uses: actions/setup-python@v7.0.0
-      with:
-        python-version-file: "pyproject.toml"
+      - name: Set up Python
+        uses: actions/setup-python@v7.1.0
+        with:
+          python-version-file: "pyproject.toml"
 
-    - name: Build package
-      run: uv build
+      - name: Build package
+        run: uv build
 
-    - name: Upload wheel to release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        TAG_NAME: ${{ github.event.release.tag_name }}
-      run:
-        gh release upload "$TAG_NAME" ./dist/pre_commit_check_office_metadata-*.whl
+      - name: Upload wheel to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: gh release upload "$TAG_NAME" ./dist/pre_commit_check_office_metadata-*.whl
