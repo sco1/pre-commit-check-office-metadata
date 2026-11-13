@@ -60,7 +60,7 @@ line-length = 100
 
 [tool.isort]
 case_sensitive = true
-known_first_party = "pre-commit-check-office-metadata,tests"
+known_first_party = "pre_commit_check_office_metadata,tests"
 no_lines_before = "LOCALFOLDER"
 order_by_type = false
 profile = "black"

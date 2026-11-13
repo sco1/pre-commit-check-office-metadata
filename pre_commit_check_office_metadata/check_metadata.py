@@ -64,8 +64,17 @@ def check_document(doc: Path, filters: dict[str, set[str]]) -> None:
     document root, and values are the tags to examine for any attached data.
 
     All matching items are bundled into a single exception per Office document.
+
+    A `ValueError` is raised if the document cannot be read as an Office document, e.g. it is not a
+    valid zip archive (such as a password-protected file), a metadata XML file is missing, or a
+    metadata XML file cannot be parsed.
     """
-    zf = zipfile.Path(doc)
+    try:
+        zf = zipfile.Path(doc)
+    except zipfile.BadZipFile as e:
+        raise ValueError(
+            "Not a valid zip archive; the file may be corrupt or password-protected"
+        ) from e
 
     found = {}
     for xml_path, flag_tags in filters.items():
@@ -73,7 +82,13 @@ def check_document(doc: Path, filters: dict[str, set[str]]) -> None:
         if not doc_path.exists():
             raise ValueError(f"{xml_path} not found in document metadata")
 
-        root = ET.fromstring(doc_path.read_text())
+        # Parse from bytes so the XML declaration determines the encoding, rather than the system's
+        # locale encoding (e.g. cp1252 on Windows)
+        try:
+            root = ET.fromstring(doc_path.read_bytes())
+        except ET.ParseError as e:
+            raise ValueError(f"{xml_path} could not be parsed: {e}") from e
+
         found[xml_path] = _check_attributes(root, flag_tags)
 
     if any(x for x in found.values()):
