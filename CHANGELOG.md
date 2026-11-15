@@ -8,6 +8,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html) (`<ma
 
 * `--extensions`, `--app-exclude`, and `--core-exclude` now take a single comma-separated value (e.g. `--app-exclude=Application,Company`) rather than space-separated values
 * Extension and tag values are now validated; invalid values exit with an error
+* Metadata reports now omit XML files with no matches and list tags in alphabetical order
 
 ### Fixed
 

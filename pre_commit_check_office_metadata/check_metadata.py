@@ -46,9 +46,13 @@ class MetadataFoundError(Exception):  # noqa: D101
         super().__init__(msg)
         self.details = details
 
-    def report(self) -> None:  # noqa: D102
-        for xml_path, found_tags in self.details.items():
-            print(f"    {xml_path}: {', '.join(found_tags)}")
+    def report(self) -> None:
+        """Print the found tags for each XML file, sorted for deterministic output."""
+        for xml_path, found_tags in sorted(self.details.items()):
+            if not found_tags:
+                continue
+
+            print(f"    {xml_path}: {', '.join(sorted(found_tags, key=str.casefold))}")
 
 
 def _check_attributes(root: ET.Element, flag_tags: set[str]) -> set[str]:
@@ -89,9 +93,11 @@ def check_document(doc: Path, filters: dict[str, set[str]]) -> None:
         except ET.ParseError as e:
             raise ValueError(f"{xml_path} could not be parsed: {e}") from e
 
-        found[xml_path] = _check_attributes(root, flag_tags)
+        hits = _check_attributes(root, flag_tags)
+        if hits:
+            found[xml_path] = hits
 
-    if any(x for x in found.values()):
+    if found:
         raise MetadataFoundError("Metadata found", found)
 
 

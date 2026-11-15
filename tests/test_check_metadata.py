@@ -45,6 +45,21 @@ def test_error_report(capsys: pytest.CaptureFixture) -> None:
     assert captured.out == "    path_to/some.xml: Child\n"
 
 
+def test_error_report_sorted_skips_empty(capsys: pytest.CaptureFixture) -> None:
+    details = {
+        "docProps/core.xml": {"lastModifiedBy", "creator"},
+        "docProps/empty.xml": set(),
+        "docProps/app.xml": {"Company", "Application", "appVersion"},
+    }
+    MetadataFoundError("Metadata found", details).report()
+
+    captured = capsys.readouterr()
+    assert captured.out == (
+        "    docProps/app.xml: Application, appVersion, Company\n"
+        "    docProps/core.xml: creator, lastModifiedBy\n"
+    )
+
+
 def test_check_attributes() -> None:
     zf = zipfile.Path(TEST_DATA_DIR / "sample_file.xlsx")
     doc_path = zf / "docProps/app.xml"
@@ -116,7 +131,20 @@ def test_check_document_non_ascii_metadata(tmp_path: Path, encoding: str) -> Non
     with pytest.raises(MetadataFoundError) as e:
         CHECK_DOC_P(doc)
 
-    assert e.value.details["docProps/core.xml"] == {"creator"}
+    # The app.xml fixture contains no flagged tags, so it should not be included in the details
+    assert e.value.details == {"docProps/core.xml": {"creator"}}
+
+
+def test_main_report_output(capsys: pytest.CaptureFixture) -> None:
+    doc = TEST_DATA_DIR / "sample_file.xlsx"
+    assert main([str(doc)]) == 1
+
+    captured = capsys.readouterr()
+    assert captured.out == (
+        f"{doc}:\n"
+        "    docProps/app.xml: Application, Company\n"
+        "    docProps/core.xml: creator, lastModifiedBy\n"
+    )
 
 
 def test_main_invalid_document_reported(tmp_path: Path, capsys: pytest.CaptureFixture) -> None:
